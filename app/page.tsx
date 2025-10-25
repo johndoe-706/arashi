@@ -194,7 +194,7 @@ export default function HomePage() {
 
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
-              <div className="text-center px-8 py-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg">
+              <div className="text-center px-8 py-6 ">
                 <h1 className="font-bold mb-7 text-4xl">
                   Welcome to <span className="text-primary">Arashi</span>
                 </h1>
