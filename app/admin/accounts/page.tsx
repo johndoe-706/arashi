@@ -555,7 +555,7 @@ export default function AdminAccountsPage() {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="price">Price ($)</Label>
+                  <Label htmlFor="price">Price (MMK)</Label>
                   <Input
                     id="price"
                     type="number"
@@ -575,6 +575,7 @@ export default function AdminAccountsPage() {
                   <Input
                     id="skins"
                     type="number"
+                    required
                     min="0"
                     value={accountForm.skins}
                     onChange={(e) =>
@@ -589,6 +590,7 @@ export default function AdminAccountsPage() {
                   <Label htmlFor="collector_level">Collector Level</Label>
                   <Select
                     value={accountForm.collector_level}
+                    required
                     onValueChange={(v) =>
                       setAccountForm((prev) => ({
                         ...prev,

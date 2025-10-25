@@ -1,4 +1,4 @@
-.custom-loader {
+/* .custom-loader {
   width: 240px;
   height: 44px;
   border-radius: 40px;
@@ -19,4 +19,49 @@
   100% {
     inset: 0;
   }
+} */
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #0f172a;
+  font-family: Arial, sans-serif;
+}
+
+.progress-container {
+  width: 80%;
+  max-width: 500px;
+  background: #1e293b;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 0 10px #00f6ff55;
+  margin: 5px 0;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background: linear-gradient(90deg, #00f6ff, #766df4);
+  border-radius: 25px;
+  box-shadow: 0 0 20px #00f6ff, 0 0 40px #39ff14;
+  animation: load 5s forwards;
+}
+
+@keyframes load {
+  from {
+    width: 0;
+  }
+  to {
+    width: 85%;
+  }
+}
+
+.label {
+  color: #e2e8f0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }

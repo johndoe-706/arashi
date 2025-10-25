@@ -29,6 +29,8 @@ import {
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import Footer from "@/components/ui/footer";
+import Loading from "@/components/loading/Loading";
 
 // Define empty array as constant to avoid re-renders
 const EMPTY_ARRAY: any[] = [];
@@ -82,9 +84,7 @@ export default function MobileLegendPage() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">Loading...</div>
-        </div>
+        <Loading />
       </div>
     );
   }
@@ -198,6 +198,9 @@ export default function MobileLegendPage() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

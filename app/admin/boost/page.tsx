@@ -192,6 +192,7 @@ export default function AdminRankBoostPage() {
                   <Label htmlFor="title">Title</Label>
                   <Input
                     id="title"
+                    required
                     value={rankBoostForm.title}
                     onChange={(e) =>
                       setRankBoostForm((prev) => ({
@@ -207,6 +208,7 @@ export default function AdminRankBoostPage() {
                   <Label htmlFor="price">Price (MMK)</Label>
                   <Input
                     id="price"
+                    type="number"
                     min="0"
                     value={rankBoostForm.price}
                     onChange={(e) =>

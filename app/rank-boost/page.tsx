@@ -5,6 +5,8 @@ import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Footer from "@/components/ui/footer";
+import Loading from "@/components/loading/Loading";
 
 export default function RankBoostPage() {
   const [services, setServices] = useState<any[]>([]);
@@ -35,9 +37,7 @@ export default function RankBoostPage() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">Loading rank boost services...</div>
-        </div>
+        <Loading />
       </div>
     );
   }
@@ -47,7 +47,7 @@ export default function RankBoostPage() {
       <Navbar />
 
       <main className="container mx-auto px-4 py-8">
-        <h2 className="text-3xl font-bold uppercase text-foreground md:text-4xl">
+        <h2 className="text-3xl font-bold uppercase text-foreground md:text-4xl mb-5">
           <span className="text-muted-foreground/30">Rank Boost </span>
           Services
         </h2>
@@ -65,12 +65,18 @@ export default function RankBoostPage() {
               </div>
 
               <div className="text-xl font-bold">
-                {s.price ? `${s.price} MMK` : "N/A"}
+                {s.price !== "0" ? `${s.price} MMK` : "Negotiable"}
               </div>
 
               <div>
                 <Button asChild>
-                  <Link href={`/rank-boost/${s.id}`}>Order</Link>
+                  <Link
+                    href={`https://t.me/natmin8?text=${encodeURIComponent(
+                      s.title
+                    )}%20Rank%20Boost%20ချင်လို့ပါ။!`}
+                  >
+                    Boost Now
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -85,6 +91,9 @@ export default function RankBoostPage() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

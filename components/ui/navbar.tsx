@@ -200,6 +200,12 @@ export function Navbar() {
                   Manage Ads
                 </Link>
                 <Link
+                  href="/admin/boost"
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Manage Rank Boost
+                </Link>
+                <Link
                   href="/admin/profile"
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
@@ -434,6 +440,13 @@ export function Navbar() {
                               onClick={() => setIsOpen(false)}
                             >
                               Manage Ads
+                            </Link>
+                            <Link
+                              href="/admin/boost"
+                              className="block text-base font-medium transition-colors hover:text-primary py-2"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              Manage Rank Boost
                             </Link>
                             <Link
                               href="/admin/profile"

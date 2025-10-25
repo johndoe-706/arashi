@@ -274,6 +274,7 @@ export default function AdminAdsPage() {
                   <Input
                     id="ad-title"
                     value={adForm.title}
+                    required
                     onChange={(e) =>
                       setAdForm((prev) => ({ ...prev, title: e.target.value }))
                     }
