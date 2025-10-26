@@ -4,9 +4,8 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/lib/providers";
 
 export const metadata: Metadata = {
-  title: "MR.KIM - Premium Game Accounts",
-  description:
-    "Buy premium Mobile Legend and PUBG accounts with instant delivery",
+  title: "Arashi - Mobile Legend Accounts Shop",
+  description: "Buy or Rank Boost with Arashi's Shop",
 };
 
 export default function RootLayout({

@@ -15,10 +15,11 @@ const translations = {
     "nav.admin": "Admin",
     "nav.home": "Home",
     "nav.logout": "Logout",
-    "hero.title": "Premium Game Accounts Shop",
     "hero.subtitle":
       "Find your perfect gaming account. Top-ranked, verified, and ready to play.",
     "hero.ads": "Special Offers",
+
+    "hero.title1": "Welcome to",
     "hero.mlbb_accounts": "Mobile Legend Accounts",
     "hero.explore_mlbb_accounts": "View MLBB Accounts",
     "hero.pubg_accounts": "PUBG Accounts",

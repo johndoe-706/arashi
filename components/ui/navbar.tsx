@@ -156,7 +156,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur ">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -166,7 +166,7 @@ export function Navbar() {
               alt="Logo"
               width={40}
               height={40}
-              className="h-10 w-10 object-contain"
+              className="h-10 w-10 object-contain "
               priority
             />
             <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">

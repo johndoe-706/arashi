@@ -15,12 +15,14 @@ import { PromoCard } from "@/components/ui/PromoCard";
 import Image from "next/image";
 
 import BG1 from "../components/image/BG1.jpg";
-import BG2 from "../components/image/bg2.jpg";
+import BG2 from "../components/image/BG2.png";
+import BG3 from "../components/image/BG3.png";
+
 import { CarouselSection } from "@/components/ui/carousel-section";
 import Footer from "@/components/ui/footer";
 
 // Background images array
-const BACKGROUNDS = [BG1, BG2];
+const BACKGROUNDS = [BG1, BG2, BG3];
 
 export default function HomePage() {
   const [ads, setAds] = useState<any[]>([]);
@@ -195,8 +197,9 @@ export default function HomePage() {
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
               <div className="text-center px-8 py-6 ">
-                <h1 className="font-bold mb-7 text-4xl">
-                  Welcome to <span className="text-primary">Arashi</span>
+                <h1 className="font-bold mb-7 text-4xl  py-2 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                   {t("hero.title1")}
+                  <span className="text-primary">Ara Shi's Shop</span>
                 </h1>
                 <p className="text-lg text-gray-100">
                   Your trusted marketplace for premium game accounts and
