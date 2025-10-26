@@ -88,7 +88,7 @@ export default function OfferDetailPage() {
 
   const telegramUrl = useMemo(() => {
     if (!account) return "";
-    return `https://t.me/KIM_2Thousand7?text=${encodeURIComponent(
+    return `https://t.me/natmin8?text=${encodeURIComponent(
       account.title
     )}%20ဒီအကောင့်လေး%20ဝယ်ချင်လို့ပါ။!`;
   }, [account]);
