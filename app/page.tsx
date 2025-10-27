@@ -29,7 +29,7 @@ export default function HomePage() {
   const [mlAccounts, setMlAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const { t } = useLanguage();
+  const t = useLanguage();
   const [activeSlide, setActiveSlide] = useState(0);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
@@ -196,15 +196,27 @@ export default function HomePage() {
 
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
-              <div className="text-center mt-24 flex flex-col px-8 py-6 ">
-                <h1 className="font-bold mb-7 text-4xl  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
-                  {t("hero.title1")}
-                  <span className="text-primary">{t("hero.title2")}</span>
-                </h1>
-                <p className="text-lg p-1 text-gray-100 backdrop-blur-md rounded-md bg-black/40 inline-block">
-                  {t("hero.subtitle")}
-                </p>
-              </div>
+              {t.language === "en" ? (
+                <div className="text-center mt-24 flex flex-col px-8 py-6 ">
+                  <h1 className="font-bold mb-7 text-4xl  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                    Welcome to
+                    <span className="text-primary"> Arashi</span>
+                  </h1>
+                  <p className="text-lg p-1 text-gray-100 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                    {t.t("hero.subtitle")}
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center mt-24 flex flex-col px-8 py-6 ">
+                  <h1 className="font-bold mb-7 text-2xl text-primary  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                    Arashi
+                    <span className=" text-white"> မှကြိုဆိုပါသည်။</span>
+                  </h1>
+                  <p className="text-md p-1 text-gray-100 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                    {t.t("hero.subtitle")}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Content */}
@@ -217,7 +229,7 @@ export default function HomePage() {
                 hover:to-blue-600 shadow-lg hover:shadow-purple-500/30
                 transition-all duration-300"
               >
-                {t("hero.button1")}
+                {t.t("hero.button1")}
               </Link>
               <Link
                 href="/mobile-legend"
@@ -227,7 +239,7 @@ export default function HomePage() {
                 hover:to-blue-600 shadow-lg hover:shadow-purple-500/30
                 transition-all duration-300"
               >
-                {t("hero.button2")}
+                {t.t("hero.button2")}
               </Link>
             </div>
           </div>
@@ -236,7 +248,7 @@ export default function HomePage() {
         {/* Mobile Legends Accounts Section */}
         {mlAccounts.length > 0 && (
           <section className="container mx-auto px-4 py-12">
-            <CarouselSection title={t("hero.new_arrival_mlbb")}>
+            <CarouselSection title={t.t("hero.new_arrival_mlbb")}>
               {mlAccounts.map((account) => (
                 <GameCard
                   id={account?.id}

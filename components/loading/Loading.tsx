@@ -1,34 +1,17 @@
-"use client";
 import React from "react";
 import "./loading.css";
 
 const Loading = () => {
   return (
-    <section className="spinner-container bg-white text-purple-500 dark:bg-black w-full h-full flex items-center justify-center">
-      <div className="spinner">
-        <span className="spinner__leter" data-letter="L">
-          L
-        </span>
-        <span className="spinner__leter" data-letter="o">
-          o
-        </span>
-        <span className="spinner__leter" data-letter="a">
-          a
-        </span>
-        <span className="spinner__leter" data-letter="d">
-          d
-        </span>
-        <span className="spinner__leter" data-letter="i">
-          i
-        </span>
-        <span className="spinner__leter" data-letter="n">
-          n
-        </span>
-        <span className="spinner__leter" data-letter="g">
-          g
-        </span>
+    // <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    //   <div className="custom-loader"></div>
+    // </div>
+    <div className=" body">
+      <div className=" label">Loading Progress...</div>
+      <div className=" progress-container">
+        <div className=" progress-bar"></div>
       </div>
-    </section>
+    </div>
   );
 };
 

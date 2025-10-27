@@ -1,78 +1,67 @@
-.spinner-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.spinner-container .spinner {
-  font-size: 2em;
-}
-
-.spinner-container .spinner__leter {
-  font-weight: light;
+/* .custom-loader {
+  width: 240px;
+  height: 44px;
+  border-radius: 40px;
+  color: #766df4;
+  border: 4px solid;
   position: relative;
-  color: rgba(188, 188, 188, 0.25);
-  text-transform: uppercase;
 }
-
-.spinner-container .spinner__leter:before {
-  content: attr(data-letter);
+.custom-loader::before {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  /* color: #333;  */
-  background: #9c27b0;
-  background: linear-gradient(to right, #9c27b0 0%, #2196f3 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: load-animation 2.8s infinite;
-  animation-fill-mode: backwards;
-  text-transform: uppercase;
+  margin: 4px;
+  inset: 0 100% 0 0;
+  border-radius: inherit;
+  background: #766df4;
+  animation: p6 2s infinite;
+}
+@keyframes p6 {
+  100% {
+    inset: 0;
+  }
+} */
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #0f172a;
+  font-family: Arial, sans-serif;
 }
 
-/* Dark mode styles */
-.dark .spinner-container .spinner__leter:before {
-  color: #fff; /* White text for dark mode */
+.progress-container {
+  width: 80%;
+  max-width: 500px;
+  background: #1e293b;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 0 10px #00f6ff55;
+  margin: 5px 0;
 }
 
-.spinner-container .spinner__leter:nth-child(2):before {
-  animation-delay: 0.4s;
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background: linear-gradient(90deg, #00f6ff, #766df4);
+  border-radius: 25px;
+  box-shadow: 0 0 20px #00f6ff, 0 0 40px #39ff14;
+  animation: load 5s forwards;
 }
 
-.spinner-container .spinner__leter:nth-child(3):before {
-  animation-delay: 0.8s;
-}
-
-.spinner-container .spinner__leter:nth-child(4):before {
-  animation-delay: 1.2s;
-}
-
-.spinner-container .spinner__leter:nth-child(5):before {
-  animation-delay: 1.6s;
-}
-
-.spinner-container .spinner__leter:nth-child(6):before {
-  animation-delay: 2s;
-}
-
-.spinner-container .spinner__leter:nth-child(7):before {
-  animation-delay: 2.4s;
-}
-
-@keyframes load-animation {
-  0%,
-  80%,
+@keyframes load {
+  from {
+    width: 0;
+  }
   to {
-    transform: rotateY(-90deg);
-    opacity: 0;
+    width: 85%;
   }
-  5% {
-    opacity: 0.5;
-  }
-  20%,
-  50% {
-    transform: rotateY(0);
-    opacity: 1;
-  }
+}
+
+.label {
+  color: #e2e8f0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }

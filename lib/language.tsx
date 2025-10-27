@@ -76,8 +76,8 @@ const translations = {
     "hero.new_arrival_mlbb": "MLBB အသစ်ရောက်ရှိမှု",
     "hero.new_arrival_pubg": "PUBG အသစ်ရောက်ရှိမှု",
 
-    "hero.title1": "Arashi မှ",
-    "hero.title2": "ကြိုဆိုပါသည်။",
+    "hero.title1": "Arashi ",
+    "hero.title2": "မှကြိုဆိုပါသည်။",
     "hero.subtitle":
       "ယုံကြည်စိတ်ချရသော ဂိမ်းအကောင့်များနှင့် ပရော်ဖက်ရှင်နယ် Rank Boosting ဝန်ဆောင်မှုများ",
     "hero.button1": "Rank Boost ဝန်ဆောင်မှု",
