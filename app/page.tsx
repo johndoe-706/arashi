@@ -196,7 +196,7 @@ export default function HomePage() {
 
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
-              <div className="text-center px-8 py-6 ">
+              <div className="text-center mt-24 flex flex-col px-8 py-6 ">
                 <h1 className="font-bold mb-7 text-4xl  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
                   {t("hero.title1")}
                   <span className="text-primary">{t("hero.title2")}</span>

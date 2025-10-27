@@ -4,7 +4,7 @@ import "./loading.css";
 
 const Loading = () => {
   return (
-    <section className="spinner-container bg-white dark:bg-black w-full h-full flex items-center justify-center">
+    <section className="spinner-container bg-white text-purple-500 dark:bg-black w-full h-full flex items-center justify-center">
       <div className="spinner">
         <span className="spinner__leter" data-letter="L">
           L

@@ -21,7 +21,11 @@
   position: absolute;
   top: 0;
   left: 0;
-  color: #333; /* Light mode color */
+  /* color: #333;  */
+  background: #9c27b0;
+  background: linear-gradient(to right, #9c27b0 0%, #2196f3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   animation: load-animation 2.8s infinite;
   animation-fill-mode: backwards;
   text-transform: uppercase;
