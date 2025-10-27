@@ -15,16 +15,21 @@ const translations = {
     "nav.admin": "Admin",
     "nav.home": "Home",
     "nav.logout": "Logout",
-    "hero.subtitle":
-      "Find your perfect gaming account. Top-ranked, verified, and ready to play.",
+
     "hero.ads": "Special Offers",
 
-    "hero.title1": "Welcome to",
-    "hero.mlbb_accounts": "Mobile Legend Accounts",
-    "hero.explore_mlbb_accounts": "View MLBB Accounts",
-    "hero.pubg_accounts": "PUBG Accounts",
-    "hero.explore_pubg_accounts": "View PUBG Accounts",
-    "hero.new_arrival_mlbb": "New Arrival MLBB",
+    "hero.title1": "Welcome to ",
+    "hero.title2": "Arashi",
+    "hero.subtitle":
+      "Trusted marketplace for premium game accounts and professional boosting services",
+    "hero.button1": "Rank Boost Service",
+    "hero.button2": "View MLBB Accounts",
+
+    "text.new": "New",
+    "text.accounts": "Accounts",
+    "text.rank_boost": "Rank Boost",
+    "text.services": "Services",
+
     "hero.new_arrival_pubg": "New Arrival PUBG",
 
     "offer.back": "Back to Home",
@@ -62,8 +67,7 @@ const translations = {
     "nav.home": "ပင်မစာမျက်နှာ",
     "nav.logout": "ထွက်ရန်",
     "hero.title": "ပရီမီယံ ဂိမ်းအကောင့်များ",
-    "hero.subtitle":
-      "သင့်အတွက် အကောင့်ကောင်းများကို ရှာဖွေပါ။ အဆင့်မြင့်၊ အတည်ပြုပြီး၊ ကစားရန် အဆင်သင့်။",
+
     "hero.ads": "အထူးကမ်းလှမ်းချက်များ",
     "hero.mlbb_accounts": "MLBB အကောင့်များ",
     "hero.explore_mlbb_accounts": "MLBB အကောင့်ကြည့်ရန်",
@@ -71,6 +75,17 @@ const translations = {
     "hero.explore_pubg_accounts": "PUBG အကောင့်ကြည့်ရန်",
     "hero.new_arrival_mlbb": "MLBB အသစ်ရောက်ရှိမှု",
     "hero.new_arrival_pubg": "PUBG အသစ်ရောက်ရှိမှု",
+
+    "hero.title1": "Arashi မှ",
+    "hero.title2": "ကြိုဆိုပါသည်။",
+    "hero.subtitle":
+      "ယုံကြည်စိတ်ချရသော ဂိမ်းအကောင့်များနှင့် ပရော်ဖက်ရှင်နယ် Rank Boosting ဝန်ဆောင်မှုများ",
+    "hero.button1": "Rank Boost ဝန်ဆောင်မှု",
+    "hero.button2": "MLBB အကောင့်များ ကြည့်ရန်",
+    "text.new": "အကောင့်",
+    "text.accounts": "အသစ်များ",
+    "text.rank_boost": "Rank Boost",
+    "text.services": "ဝန်ဆောင်မှုများ",
 
     "offer.back": "ပင်မသို့ ပြန်သွားရန်",
     "offer.description": "ဖော်ပြချက်",

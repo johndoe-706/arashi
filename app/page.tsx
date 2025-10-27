@@ -141,7 +141,7 @@ export default function HomePage() {
               src={ad.image_url}
               alt={ad.title || "Advertisement"}
               fill
-              className="object-cover opacity-70"
+              className="object-cover "
               priority
             />
           </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white  ">
       <Navbar />
 
       <div className="min-h-screen bg-background">
@@ -197,13 +197,12 @@ export default function HomePage() {
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
               <div className="text-center px-8 py-6 ">
-                <h1 className="font-bold mb-7 text-4xl  py-2 backdrop-blur-md rounded-md bg-black/40 inline-block">
-                   {t("hero.title1")}
-                  <span className="text-primary">Ara Shi's Shop</span>
+                <h1 className="font-bold mb-7 text-4xl  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                  {t("hero.title1")}
+                  <span className="text-primary">{t("hero.title2")}</span>
                 </h1>
-                <p className="text-lg text-gray-100">
-                  Your trusted marketplace for premium game accounts and
-                  professional boosting services
+                <p className="text-lg p-1 text-gray-100 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                  {t("hero.subtitle")}
                 </p>
               </div>
             </div>
@@ -218,7 +217,7 @@ export default function HomePage() {
                 hover:to-blue-600 shadow-lg hover:shadow-purple-500/30
                 transition-all duration-300"
               >
-                Rank Boost Service
+                {t("hero.button1")}
               </Link>
               <Link
                 href="/mobile-legend"
@@ -228,7 +227,7 @@ export default function HomePage() {
                 hover:to-blue-600 shadow-lg hover:shadow-purple-500/30
                 transition-all duration-300"
               >
-                View MLBB Accounts
+                {t("hero.button2")}
               </Link>
             </div>
           </div>

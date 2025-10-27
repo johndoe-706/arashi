@@ -8,10 +8,12 @@ import Link from "next/link";
 import Footer from "@/components/ui/footer";
 import Loading from "@/components/loading/Loading";
 import { CardHeader, CardTitle } from "@/components/ui/card";
+import { useLanguage } from "@/lib/language";
 
 export default function RankBoostPage() {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -49,8 +51,10 @@ export default function RankBoostPage() {
 
       <main className="container mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold uppercase text-foreground md:text-4xl mb-5">
-          <span className="text-muted-foreground/30">Rank Boost </span>
-          Services
+          <span className="text-muted-foreground/30">
+            {t("text.rank_boost")}
+          </span>
+          <span> {t("text.services")}</span>
         </h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
@@ -63,9 +67,6 @@ export default function RankBoostPage() {
                 <h3 className="text-lg font-semibold text-accent ">
                   {s.title}
                 </h3>
-                {/* <CardHeader>
-                  <CardTitle>{s.title}</CardTitle>
-                </CardHeader> */}
               </div>
 
               <div className="text-xl font-bold ">

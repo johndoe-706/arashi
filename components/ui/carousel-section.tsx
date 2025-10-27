@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/lib/language";
 
 interface CarouselSectionProps {
   title: string;
@@ -19,6 +20,7 @@ export function CarouselSection({ title, children }: CarouselSectionProps) {
   });
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+  const { t } = useLanguage();
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
   const scrollNext = () => emblaApi && emblaApi.scrollNext();
@@ -45,9 +47,9 @@ export function CarouselSection({ title, children }: CarouselSectionProps) {
     <section className="py-8">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
-            <span className="text-muted-foreground/30">NEW </span>
-            ACCOUNTS
+          <h2 className="text-3xl font-bold text-foreground uppercase md:text-4xl">
+            <span className="text-muted-foreground/30 ">{t("text.new")} </span>
+            {t("text.accounts")}
           </h2>
           <div className="flex gap-2">
             <Button

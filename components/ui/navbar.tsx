@@ -95,7 +95,7 @@ export function Navbar() {
     try {
       const { data, error } = await supabase
         .from("accounts")
-        .select("id, title, price, images, category, is_sold")
+        .select("id, title, price, images, is_sold")
         .ilike("title", `%${query}%`)
         .eq("is_sold", false)
         .limit(8);
@@ -156,7 +156,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur ">
+    <nav className="sticky top-0 z-50 w-full border-b bg-black">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
