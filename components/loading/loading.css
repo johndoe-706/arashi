@@ -17,7 +17,7 @@
 }
 
 .spinner-container .spinner__leter:before {
-  content: attr(letter);
+  content: attr(data-letter);
   position: absolute;
   top: 0;
   left: 0;
