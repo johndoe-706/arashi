@@ -5,23 +5,17 @@ import { Navbar } from "@/components/ui/navbar";
 import { useLanguage } from "@/lib/language";
 import { supabase } from "@/lib/supabase";
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Loading from "@/components/loading/Loading";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
 import { GameCard } from "@/components/ui/GameCard";
-import { PromoCard } from "@/components/ui/PromoCard";
-import Image from "next/image";
+import Link from "next/link";
+import { CarouselSection } from "@/components/ui/carousel-section";
+import Footer from "@/components/ui/footer";
 
 import BG1 from "../components/image/BG1.jpg";
 import BG2 from "../components/image/BG2.png";
 import BG3 from "../components/image/BG3.png";
+import Image from "next/image";
 
-import { CarouselSection } from "@/components/ui/carousel-section";
-import Footer from "@/components/ui/footer";
-
-// Background images array
 const BACKGROUNDS = [BG1, BG2, BG3];
 
 export default function HomePage() {
@@ -33,22 +27,18 @@ export default function HomePage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  // Memoized background styles
   const backgroundStyle = useMemo(
     () => ({
       backgroundImage: `url(${BACKGROUNDS[currentBgIndex].src})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
     }),
     [currentBgIndex]
   );
 
-  // Optimized data fetching
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      // Fetch both ads and accounts in parallel
       const [adsResponse, mlResponse] = await Promise.all([
         supabase
           .from("ads")
@@ -75,18 +65,16 @@ export default function HomePage() {
     fetchData();
   }, [fetchData]);
 
-  // Background rotation effect
   useEffect(() => {
     if (loading) return;
 
     const interval = setInterval(() => {
       setCurrentBgIndex((prev) => (prev + 1) % BACKGROUNDS.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [loading]);
 
-  // Auto-scroll functionality for carousel
   useEffect(() => {
     if (!emblaApi || ads.length <= 1) return;
 
@@ -97,7 +85,6 @@ export default function HomePage() {
     return () => clearInterval(autoScroll);
   }, [emblaApi, ads.length]);
 
-  // Update active slide when carousel moves
   useEffect(() => {
     if (!emblaApi) return;
 
@@ -106,14 +93,11 @@ export default function HomePage() {
     };
 
     emblaApi.on("select", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect);
-    };
+    return () => emblaApi.off("select", onSelect);
   }, [emblaApi]);
 
-  // Memoized carousel indicators
   const carouselIndicators = useMemo(() => {
-    if (ads.length <= 0) return null;
+    if (ads.length === 0) return null;
 
     return (
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
@@ -131,12 +115,11 @@ export default function HomePage() {
     );
   }, [ads.length, activeSlide, emblaApi]);
 
-  // Memoized carousel slides
   const carouselSlides = useMemo(() => {
     if (ads.length > 0) {
       return ads.map((ad) => (
         <div key={ad.id} className="flex-[0_0_100%] min-w-0">
-          <div className="relative h-64 md:h-96 bg-cover bg-center flex items-center justify-center p-8 md:p-12">
+          <div className="relative h-64 md:h-96 bg-cover bg-center flex items-center justify-center">
             <Image
               src={ad.image_url}
               alt={ad.title || "Advertisement"}
@@ -151,7 +134,7 @@ export default function HomePage() {
 
     return (
       <div className="flex-[0_0_100%] min-w-0">
-        <div className="relative h-64 md:h-96 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center p-8 md:p-12">
+        <div className="h-64 md:h-96 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl md:text-4xl font-bold text-white">
               Welcome to Our Store
@@ -172,7 +155,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white  ">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
       <Navbar />
 
       <div className="min-h-screen bg-background">
@@ -191,14 +174,13 @@ export default function HomePage() {
           className="relative container mx-auto px-4 py-8"
           style={backgroundStyle}
         >
-          {/* Overlay for better text contrast */}
-          <div className="absolute inset-0 bg-black/30 transition-opacity duration-1000"></div>
+          <div className="absolute inset-0 bg-black/30"></div>
 
           <div className="h-96 min-h-fit relative z-10">
             <div className="flex justify-center mb-16">
               {t.language === "en" ? (
-                <div className="text-center mt-24 flex flex-col px-8 py-6 ">
-                  <h1 className="font-bold mb-7 text-4xl  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                <div className="text-center mt-24 flex flex-col px-8 py-6">
+                  <h1 className="font-bold mb-7 text-4xl py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
                     Welcome to
                     <span className="text-primary"> Arashi</span>
                   </h1>
@@ -207,10 +189,10 @@ export default function HomePage() {
                   </p>
                 </div>
               ) : (
-                <div className="text-center mt-24 flex flex-col px-8 py-6 ">
-                  <h1 className="font-bold mb-7 text-2xl text-primary  py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
+                <div className="text-center mt-24 flex flex-col px-8 py-6">
+                  <h1 className="font-bold mb-7 text-2xl text-primary py-2 px-1 backdrop-blur-md rounded-md bg-black/40 inline-block">
                     Arashi
-                    <span className=" text-white"> မှကြိုဆိုပါသည်။</span>
+                    <span className="text-white"> မှကြိုဆိုပါသည်။</span>
                   </h1>
                   <p className="text-md p-1 text-gray-100 backdrop-blur-md rounded-md bg-black/40 inline-block">
                     {t.t("hero.subtitle")}
@@ -219,7 +201,6 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Content */}
             <div className="flex flex-col gap-4 md:flex-row md:justify-center">
               <Link
                 href="/rank-boost"
@@ -265,7 +246,6 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Footer */}
         <Footer />
       </div>
     </div>
