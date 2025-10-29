@@ -246,16 +246,18 @@ export default function HomePage() {
           <section className="container mx-auto px-4 py-12">
             <CarouselSection title={t.t("hero.new_arrival_mlbb")}>
               {mlAccounts.map((account) => (
-                <GameCard
-                  id={account?.id}
-                  key={account.id}
-                  title={account.title}
-                  image={account?.images?.[0]}
-                  price={account.price}
-                  skins={50}
-                  collectorLevel={account.collector_level}
-                  is_sold={account.is_sold}
-                />
+                <Link href={`/offers/${account.id}`} key={account.id}>
+                  <GameCard
+                    id={account?.id}
+                    key={account.id}
+                    title={account.title}
+                    image={account?.images?.[0]}
+                    price={account.price}
+                    skins={account.skins}
+                    collectorLevel={account.collector_level}
+                    is_sold={account.is_sold}
+                  />
+                </Link>
               ))}
             </CarouselSection>
           </section>
