@@ -141,7 +141,7 @@ export default function MobileLegendPage() {
                 title={account.title}
                 price={account.price}
                 collectorLevel={account.collector_level}
-                skins={50}
+                skins={account.skins}
                 image={account?.images[0]}
                 is_sold={account.is_sold}
               />
