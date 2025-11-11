@@ -324,7 +324,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center space-x-2">
               {/* Language Selector */}
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-20">
+                <SelectTrigger className="w-20 text-black dark:text-white">
                   <div className="flex items-center gap-2">
                     <Globe className="h-4 w-4" />
                     <SelectValue />
@@ -349,7 +349,7 @@ export function Navbar() {
               {/* Admin Login/Logout button */}
               {!isAdmin ? (
                 <Link href="/admin/login">
-                  <Button variant="outline" size="sm" className="ml-2">
+                  <Button variant="outline" size="sm" className="ml-2 text-white hover:text-black">
                     Admin Login
                   </Button>
                 </Link>

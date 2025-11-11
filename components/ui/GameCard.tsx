@@ -53,7 +53,7 @@ export function GameCard({
           <h3 className="font-semibold text-card-foreground line-clamp-1">
             {title}
           </h3>
-          <h3>Skins: {skins}</h3>
+          {/* <h3>Skins: {skins}</h3> */}
         </div>
 
         <hr />

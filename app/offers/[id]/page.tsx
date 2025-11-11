@@ -20,7 +20,7 @@ interface Account {
   title: string;
   description: string;
   price: number;
-  skins: number;
+
   collector_level?: string;
   is_sold?: boolean;
   images: string[];
@@ -164,7 +164,6 @@ interface AccountInfoCardProps {
 function AccountInfoCard({ account }: AccountInfoCardProps) {
   const infoItems = [
     { label: "Code", value: account.title },
-    { label: "Skins", value: account.skins },
     { label: "Level", value: account.collector_level },
     { label: "Price", value: `${account.price.toLocaleString()} MMK` },
   ];
