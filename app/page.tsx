@@ -173,7 +173,7 @@ export default function HomePage() {
 
       <div className="min-h-screen bg-background">
         {/* Hero Section with Carousel */}
-        <section className="container mx-auto px-4 py-12">
+        <section className="container  mx-auto px-4 py-12">
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-card to-secondary">
             <div ref={emblaRef} className="overflow-hidden">
               <div className="flex">{carouselSlides}</div>
@@ -184,7 +184,7 @@ export default function HomePage() {
 
         {/* Button Section with Rotating Background */}
         <section
-          className="relative container mx-auto px-4 py-8"
+          className="relative  container mx-auto px-4 py-8"
           style={backgroundStyle}
         >
           {/* Overlay for better text contrast */}

@@ -771,7 +771,7 @@ export default function AdminAccountsPage() {
                       key={account.id}
                       className={`flex items-center justify-between p-4 border rounded-lg ${
                         isMarkedForDeletion
-                          ? "bg-amber-50 border-amber-200"
+                          ? "bg-amber-50 border-amber-200 text-black"
                           : "hover:bg-muted/50"
                       }`}
                     >
@@ -804,7 +804,10 @@ export default function AdminAccountsPage() {
                           {account.skins > 0 && ` • ${account.skins} skins`}
                         </p>
                         {account.collector_level && (
-                          <Badge variant="outline" className="text-xs mt-1">
+                          <Badge
+                            variant="outline"
+                            className="text-xs dark:text-black mt-1"
+                          >
                             {account.collector_level}
                           </Badge>
                         )}
@@ -853,7 +856,7 @@ export default function AdminAccountsPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => restoreAccount(account.id)}
-                            className="flex items-center gap-1"
+                            className="flex dark:text-black items-center gap-1"
                           >
                             <Undo className="h-3 w-3" />
                             Restore

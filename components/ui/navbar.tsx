@@ -175,12 +175,12 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden text-white md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium transition-colors hover:text-primary"
+                className="text-sm text-white font-medium transition-colors hover:text-primary"
               >
                 {link.label}
               </Link>
@@ -211,7 +211,7 @@ export function Navbar() {
                 >
                   Profile
                 </Link>
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleSignOut}
@@ -219,7 +219,7 @@ export function Navbar() {
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
-                </Button>
+                </Button> */}
               </>
             )}
           </div>
@@ -229,8 +229,12 @@ export function Navbar() {
             {/* Search Dialog */}
             <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Search className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className=" text-white hover:text-black"
+                >
+                  <Search className="h-4 w-4 " />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
@@ -324,7 +328,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center space-x-2">
               {/* Language Selector */}
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-20 text-black dark:text-white">
+                <SelectTrigger className="w-20 bg-black text-white">
                   <div className="flex items-center gap-2">
                     <Globe className="h-4 w-4" />
                     <SelectValue />
@@ -342,14 +346,18 @@ export function Navbar() {
                 size="icon"
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               >
-                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Sun className="h-4 w-4 text-white hover:text-black rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                 <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               </Button>
 
               {/* Admin Login/Logout button */}
               {!isAdmin ? (
                 <Link href="/admin/login">
-                  <Button variant="outline" size="sm" className="ml-2 text-white hover:text-black">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2 text-white hover:text-black"
+                  >
                     Admin Login
                   </Button>
                 </Link>
@@ -358,7 +366,7 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   onClick={handleSignOut}
-                  className="ml-2"
+                  className="ml-2 text-white hover:text-black"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
