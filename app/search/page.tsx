@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/ui/navbar";
@@ -24,7 +24,17 @@ interface Account {
   images: string[];
 }
 
+// Main component wrapped in Suspense
 export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={<SearchResultsSkeleton />}>
+      <SearchResultsContent />
+    </Suspense>
+  );
+}
+
+// Inner component that uses useSearchParams
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q");
   const [results, setResults] = useState<Account[]>([]);
@@ -219,6 +229,39 @@ export default function SearchResultsPage() {
             })}
           </div>
         )}
+      </main>
+    </div>
+  );
+}
+
+// Skeleton loading component for Suspense fallback
+function SearchResultsSkeleton() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <div className="h-8 w-64 bg-muted rounded animate-pulse mb-2"></div>
+            <div className="h-4 w-48 bg-muted rounded animate-pulse"></div>
+          </div>
+          <div className="h-10 w-32 bg-muted rounded animate-pulse"></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="aspect-video bg-muted rounded-t-lg"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-4 bg-muted rounded"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-6 bg-muted rounded w-1/2"></div>
+                <div className="h-3 bg-muted rounded w-full"></div>
+                <div className="h-3 bg-muted rounded w-2/3"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );
