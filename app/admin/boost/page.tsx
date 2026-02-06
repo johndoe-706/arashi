@@ -15,8 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase";
-import { Plus, Edit, Trash2, Save, X, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, Save, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminRankBoostPage() {
@@ -38,9 +37,8 @@ export default function AdminRankBoostPage() {
   // Check auth once on mount
   useEffect(() => {
     const check = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = (data as any)?.session;
-      if (!session) return router.replace("/admin/login");
+      const response = await fetch("/api/admin/session");
+      if (!response.ok) return router.replace("/admin/login");
     };
     check();
   }, [router]);
@@ -53,16 +51,13 @@ export default function AdminRankBoostPage() {
         const from = (p - 1) * pageSize;
         const to = p * pageSize - 1;
 
-        const { data, count, error } = await supabase
-          .from("rank_boost")
-          .select("*", { count: "exact" })
-          .order("created_at", { ascending: false })
-          .range(from, to);
-
-        if (error) throw error;
-
-        setRankBoosts(data || []);
-        setTotal((count as number) || 0);
+        const response = await fetch(
+          `/api/admin/rank-boost?page=${p}&pageSize=${pageSize}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch rank boosts");
+        const payload = await response.json();
+        setRankBoosts(payload.data || []);
+        setTotal(payload.total || 0);
       } catch (error) {
         console.error("Error fetching rank boosts:", error);
         toast.error("Error fetching rank boosts");
@@ -89,17 +84,23 @@ export default function AdminRankBoostPage() {
       };
 
       if (isEditing && rankBoostForm.id) {
-        const { error } = await supabase
-          .from("rank_boost")
-          .update(rankBoostData)
-          .eq("id", rankBoostForm.id);
-        if (error) throw error;
+        const response = await fetch(
+          `/api/admin/rank-boost/${rankBoostForm.id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(rankBoostData),
+          }
+        );
+        if (!response.ok) throw new Error("Failed to update rank boost");
         toast.success("Rank boost updated successfully");
       } else {
-        const { error } = await supabase
-          .from("rank_boost")
-          .insert(rankBoostData);
-        if (error) throw error;
+        const response = await fetch("/api/admin/rank-boost", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rankBoost: rankBoostData }),
+        });
+        if (!response.ok) throw new Error("Failed to create rank boost");
         toast.success("Rank boost created successfully");
       }
 
@@ -122,9 +123,10 @@ export default function AdminRankBoostPage() {
       return;
 
     try {
-      const { error } = await supabase.from("rank_boost").delete().eq("id", id);
-
-      if (error) throw error;
+      const response = await fetch(`/api/admin/rank-boost/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete rank boost");
       toast.success("Rank boost deleted successfully");
       fetchData();
     } catch (error) {

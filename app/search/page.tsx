@@ -7,7 +7,6 @@ import { Navbar } from "@/components/ui/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase";
 import { CATEGORIES } from "@/lib/constants";
 import { ArrowLeft, Search } from "lucide-react";
 import Image from "next/image";
@@ -54,15 +53,14 @@ function SearchResultsContent() {
       setLoading(true);
       setError(null);
 
-      const { data, error } = await supabase
-        .from("accounts")
-        .select("*")
-        .ilike("title", `%${query}%`)
-        .eq("is_sold", false)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setResults(data || []);
+      const response = await fetch(
+        `/api/public/accounts?q=${encodeURIComponent(
+          query
+        )}&includeSold=false`
+      );
+      if (!response.ok) throw new Error("Search failed");
+      const payload = await response.json();
+      setResults(payload.data || []);
     } catch (error) {
       console.error("Search error:", error);
       setError("Failed to load search results");

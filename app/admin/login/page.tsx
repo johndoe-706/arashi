@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export default function AdminLoginPage() {
@@ -28,39 +27,24 @@ export default function AdminLoginPage() {
     try {
       console.log("Attempting login with:", { email });
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password,
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
 
-      console.debug("Supabase auth response:", { data, error });
-
-      if (error) {
-        console.error("Auth error details:", error);
-
-        // More specific error messages
-        if (error.message.includes("Invalid login credentials")) {
-          toast.error(
-            "Invalid email or password. Please check your credentials."
-          );
-        } else if (error.message.includes("Email not confirmed")) {
-          toast.error("Please confirm your email address before logging in.");
-        } else {
-          toast.error(error.message || "Login failed");
-        }
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) {
+        toast.error(payload.error || "Login failed");
         return;
       }
 
-      // Check if we have a valid session and user
-      if (data?.session && data?.user) {
-        console.log("Login successful, user:", data.user.email);
-        toast.success("Logged in successfully");
-        router.push("/admin");
-        router.refresh(); // Refresh to update auth state
-      } else {
-        console.warn("No session after login:", data);
-        toast.error("Login incomplete. Please try again.");
-      }
+      toast.success("Logged in successfully");
+      router.push("/admin");
+      router.refresh(); // Refresh to update auth state
     } catch (err: any) {
       console.error("Unexpected login error:", err);
       toast.error("An unexpected error occurred");

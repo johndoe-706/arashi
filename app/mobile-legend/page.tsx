@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/lib/supabase";
 import { COLLECTOR_LEVELS } from "@/lib/constants";
 import { GameCard } from "@/components/ui/GameCard";
 import Link from "next/link";
@@ -51,15 +50,13 @@ export default function MobileLegendPage() {
         const from = (pageNumber - 1) * pageSize;
         const to = from + pageSize - 1;
 
-        const { data, error, count } = await supabase
-          .from("accounts")
-          .select("*", { count: "exact" })
-          .order("created_at", { ascending: false })
-          .range(from, to);
-
-        if (error) throw error;
-        setAccounts(data || []);
-        setTotal(count ?? 0);
+        const response = await fetch(
+          `/api/public/accounts?page=${pageNumber}&pageSize=${pageSize}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch accounts");
+        const payload = await response.json();
+        setAccounts(payload.data || []);
+        setTotal(payload.total ?? 0);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       } finally {

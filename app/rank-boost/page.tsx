@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/ui/navbar";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Footer from "@/components/ui/footer";
@@ -19,13 +18,10 @@ export default function RankBoostPage() {
     const fetchServices = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from("rank_boost")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        setServices(data || []);
+        const response = await fetch("/api/public/rank-boost");
+        if (!response.ok) throw new Error("Failed to fetch rank boosts");
+        const payload = await response.json();
+        setServices(payload.data || []);
       } catch (err) {
         console.error("Error fetching rank boost services:", err);
       } finally {
@@ -70,7 +66,7 @@ export default function RankBoostPage() {
               </div>
 
               <div className="text-xl font-bold ">
-                {s.price !== "0" ? `${s.price} MMK` : "Negotiable"}
+                {Number(s.price) > 0 ? `${s.price} MMK` : "Negotiable"}
               </div>
 
               <div>

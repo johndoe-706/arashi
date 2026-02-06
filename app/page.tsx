@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { useLanguage } from "@/lib/language";
-import { supabase } from "@/lib/supabase";
 import useEmblaCarousel from "embla-carousel-react";
 import Loading from "@/components/loading/Loading";
 import Link from "next/link";
@@ -46,20 +45,19 @@ export default function HomePage() {
     try {
       // Fetch both ads and accounts in parallel
       const [adsResponse, mlResponse] = await Promise.all([
-        supabase
-          .from("ads")
-          .select("*")
-          .eq("is_active", true)
-          .order("order_index"),
-        supabase
-          .from("accounts")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(10),
+        fetch("/api/public/ads"),
+        fetch("/api/public/accounts?limit=10"),
       ]);
 
-      setAds(adsResponse.data || []);
-      setMlAccounts(mlResponse.data || []);
+      if (!adsResponse.ok || !mlResponse.ok) {
+        throw new Error("Failed to fetch home data");
+      }
+
+      const adsPayload = await adsResponse.json();
+      const accountsPayload = await mlResponse.json();
+
+      setAds(adsPayload.data || []);
+      setMlAccounts(accountsPayload.data || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

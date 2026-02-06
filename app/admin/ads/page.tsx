@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
 import { Save, Edit, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -29,9 +28,8 @@ export default function AdminAdsPage() {
 
   useEffect(() => {
     const check = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = (data as any)?.session;
-      if (!session) return router.replace("/admin/login");
+      const response = await fetch("/api/admin/session");
+      if (!response.ok) return router.replace("/admin/login");
       fetchData();
     };
     check();
@@ -39,11 +37,10 @@ export default function AdminAdsPage() {
 
   const fetchData = async () => {
     try {
-      const { data } = await supabase
-        .from("ads")
-        .select("*")
-        .order("order_index");
-      setAds(data || []);
+      const response = await fetch("/api/admin/ads");
+      if (!response.ok) throw new Error("Failed to fetch ads");
+      const payload = await response.json();
+      setAds(payload.data || []);
     } catch (err) {
       console.error("Error fetching ads", err);
     }
@@ -76,36 +73,27 @@ export default function AdminAdsPage() {
     try {
       setUploading(true);
 
-      // Generate unique file name
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()
-        .toString(36)
-        .substring(2)}_${Date.now()}.${fileExt}`;
-      const filePath = fileName;
-
-      console.log("Uploading to bucket: ads-images");
+      console.log("Uploading image to local storage");
 
       // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from("ads-images")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "ads");
 
-      if (error) {
-        console.error("Supabase upload error:", error);
-        throw error;
+      const response = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        console.error("Upload error:", payload?.error);
+        throw new Error(payload?.error || "Upload failed");
       }
 
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("ads-images").getPublicUrl(filePath);
-
-      console.log("Image uploaded successfully:", publicUrl);
+      console.log("Image uploaded successfully:", payload.url);
       toast.success("Image uploaded successfully");
-      return publicUrl;
+      return payload.url;
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload image. Please try again.");
@@ -148,15 +136,20 @@ export default function AdminAdsPage() {
       };
 
       if (adForm.id) {
-        const { error } = await supabase
-          .from("ads")
-          .update(adData)
-          .eq("id", adForm.id);
-        if (error) throw error;
+        const response = await fetch(`/api/admin/ads/${adForm.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(adData),
+        });
+        if (!response.ok) throw new Error("Failed to update ad");
         toast.success("Ad updated");
       } else {
-        const { error } = await supabase.from("ads").insert(adData);
-        if (error) throw error;
+        const response = await fetch("/api/admin/ads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ad: adData }),
+        });
+        if (!response.ok) throw new Error("Failed to create ad");
         toast.success("Ad created");
       }
 
@@ -187,54 +180,14 @@ export default function AdminAdsPage() {
     setImagePreview(ad.image_url);
   };
 
-  const deleteAd = async (id: string, imageUrl: string) => {
+  const deleteAd = async (id: string) => {
     if (!confirm("Are you sure you want to delete this ad?")) return;
 
     try {
-      // Delete image from storage first if it exists
-      if (imageUrl) {
-        try {
-          // Extract file name from URL
-          let fileName: string;
-
-          try {
-            // Try using URL constructor for proper URL parsing
-            const urlObj = new URL(imageUrl);
-            const pathParts = urlObj.pathname.split("/");
-            fileName = pathParts[pathParts.length - 1];
-          } catch {
-            // Fallback: simple string splitting for malformed URLs
-            const urlParts = imageUrl.split("/");
-            fileName = urlParts[urlParts.length - 1];
-          }
-
-          console.log("File to delete:", fileName);
-          console.log("Full image URL:", imageUrl);
-
-          if (fileName && fileName.length > 0) {
-            const { error: deleteStorageError } = await supabase.storage
-              .from("ads-images")
-              .remove([fileName]);
-
-            if (deleteStorageError) {
-              console.warn(
-                `Failed to delete image from storage for ad ${id}:`,
-                deleteStorageError
-              );
-              // Continue with database deletion even if storage deletion fails
-            } else {
-              console.log(`Deleted image from storage for ad ${id}`);
-            }
-          }
-        } catch (storageError) {
-          console.warn("Error deleting from storage:", storageError);
-          // Continue with database deletion even if storage deletion fails
-        }
-      }
-
-      // Delete the ad from database
-      const { error } = await supabase.from("ads").delete().eq("id", id);
-      if (error) throw error;
+      const response = await fetch(`/api/admin/ads/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete ad");
 
       toast.success("Ad deleted successfully");
       fetchData();
@@ -429,7 +382,7 @@ export default function AdminAdsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => deleteAd(ad.id, ad.image_url)}
+                      onClick={() => deleteAd(ad.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

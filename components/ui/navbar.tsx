@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import Logo2 from "../image/Logo2.png";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/lib/language";
 
 // Define empty array as constant to avoid re-renders
@@ -48,10 +47,8 @@ export function Navbar() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        setIsAdmin(!!session);
+        const response = await fetch("/api/admin/session");
+        setIsAdmin(response.ok);
       } catch (err) {
         console.error("Auth check error", err);
         setIsAdmin(false);
@@ -59,22 +56,13 @@ export function Navbar() {
     };
 
     checkAuth();
-
-    // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAdmin(!!session);
-    });
-
-    return () => subscription.unsubscribe();
   }, []);
 
   // Add the handleSignOut function here
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      const response = await fetch("/api/admin/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Failed to sign out");
 
       setIsAdmin(false);
       router.push("/");
@@ -93,18 +81,14 @@ export function Navbar() {
 
     setIsSearching(true);
     try {
-      const { data, error } = await supabase
-        .from("accounts")
-        .select("id, title, price, images, is_sold")
-        .ilike("title", `%${query}%`)
-        .eq("is_sold", false)
-        .limit(8);
-
-      if (error) throw error;
-
-      // Use nullish coalescing with the constant
-      const results = data ?? EMPTY_ARRAY;
-      setSearchResults(results);
+      const response = await fetch(
+        `/api/public/accounts?q=${encodeURIComponent(
+          query
+        )}&limit=8&includeSold=false`
+      );
+      if (!response.ok) throw new Error("Search failed");
+      const payload = await response.json();
+      setSearchResults(payload.data || EMPTY_ARRAY);
     } catch (error) {
       console.error("Search error:", error);
       setSearchResults(EMPTY_ARRAY);

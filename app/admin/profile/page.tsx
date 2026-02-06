@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
@@ -70,9 +69,8 @@ export default function AdminProfilePage() {
 
   useEffect(() => {
     const check = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = (data as any)?.session;
-      if (!session) return router.replace("/admin/login");
+      const response = await fetch("/api/admin/session");
+      if (!response.ok) return router.replace("/admin/login");
     };
     check();
   }, [router]);
@@ -110,19 +108,17 @@ export default function AdminProfilePage() {
         return;
       }
 
-      // Update password using Supabase
-      const { error } = await supabase.auth.updateUser({
-        password: formData.newPassword,
+      const response = await fetch("/api/admin/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword,
+        }),
       });
-
-      if (error) {
-        console.error("Password update error:", error);
-
-        if (error.message.includes("password")) {
-          toast.error("Invalid current password");
-        } else {
-          toast.error("Failed to update password: " + error.message);
-        }
+      const payload = await response.json();
+      if (!response.ok) {
+        toast.error(payload.error || "Failed to update password");
         return;
       }
 

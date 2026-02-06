@@ -7,7 +7,6 @@ import { Navbar } from "@/components/ui/navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImageCarousel } from "@/components/ui/image-carousel";
-import { supabase } from "@/lib/supabase";
 import { CONTACT_LINKS } from "@/lib/constants";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { useLanguage } from "@/lib/language";
@@ -40,27 +39,17 @@ export default function OfferDetailPage() {
       setLoading(true);
       setError(null);
 
-      const { data, error } = await supabase
-        .from("accounts")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) {
-        setError(
-          error.code === "PGRST116"
-            ? "Account not found"
-            : "Error loading account"
-        );
-        return;
-      }
-
-      if (!data) {
+      const response = await fetch(`/api/public/accounts/${id}`);
+      if (response.status === 404) {
         setError("Account not found");
         return;
       }
-
-      setAccount(data);
+      if (!response.ok) {
+        setError("Error loading account");
+        return;
+      }
+      const payload = await response.json();
+      setAccount(payload.data);
     } catch (err) {
       setError("Failed to load account");
     } finally {

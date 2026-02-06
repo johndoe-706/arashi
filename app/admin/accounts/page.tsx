@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase";
 import { COLLECTOR_LEVELS, CATEGORIES } from "@/lib/constants";
 import {
   CreditCard as Edit,
@@ -54,9 +53,8 @@ export default function AdminAccountsPage() {
   // Check auth once on mount
   useEffect(() => {
     const check = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = (data as any)?.session;
-      if (!session) return router.replace("/admin/login");
+      const response = await fetch("/api/admin/session");
+      if (!response.ok) return router.replace("/admin/login");
     };
     check();
   }, [router]);
@@ -69,17 +67,14 @@ export default function AdminAccountsPage() {
         const from = (p - 1) * pageSize;
         const to = p * pageSize - 1;
 
-        let query = supabase
-          .from("accounts")
-          .select("*", { count: "exact" })
-          .order("created_at", { ascending: false })
-          .range(from, to);
+        const response = await fetch(
+          `/api/admin/accounts?page=${p}&pageSize=${pageSize}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch accounts");
+        const payload = await response.json();
 
-        const { data, count, error } = await query;
-        if (error) throw error;
-
-        setAccounts(data || []);
-        setTotal((count as number) || 0);
+        setAccounts(payload.data || []);
+        setTotal(payload.total || 0);
       } catch (error) {
         console.error("Error fetching accounts:", error);
         toast.error("Error fetching accounts");
@@ -126,15 +121,20 @@ export default function AdminAccountsPage() {
       };
 
       if (isEditing && accountForm.id) {
-        const { error } = await supabase
-          .from("accounts")
-          .update(accountData)
-          .eq("id", accountForm.id);
-        if (error) throw error;
+        const response = await fetch(`/api/admin/accounts/${accountForm.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(accountData),
+        });
+        if (!response.ok) throw new Error("Failed to update account");
         toast.success("Account updated successfully");
       } else {
-        const { error } = await supabase.from("accounts").insert(accountData);
-        if (error) throw error;
+        const response = await fetch("/api/admin/accounts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ account: accountData }),
+        });
+        if (!response.ok) throw new Error("Failed to create account");
         toast.success("Account created successfully");
       }
 
@@ -148,48 +148,93 @@ export default function AdminAccountsPage() {
     }
   };
 
-  const handleDeleteAccount = async (id: string) => {
-    if (
-      !confirm(
-        "Are you sure you want to mark this account for deletion? It will show as 'Sold Out' for 24 hours before being permanently deleted along with its images."
-      )
+  // const handleDeleteAccount = async (id: string) => {
+  //   if (
+  //     !confirm(
+  //       "Are you sure you want to mark this account for deletion? It will show as 'Sold Out' for 24 hours before being permanently deleted along with its images."
+  //     )
+  //   )
+  //     return;
+
+  //   try {
+  //     const response = await fetch(`/api/admin/accounts/${id}`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         is_sold: true,
+  //         sold_at: new Date().toISOString(),
+  //         deleted_at: new Date().toISOString(),
+  //       }),
+  //     });
+
+  //     if (!response.ok) throw new Error("Failed to update account");
+  //     toast.success(
+  //       "Account marked for deletion. It will be permanently deleted in 24 hours along with its images."
+  //     );
+  //     fetchData();
+  //   } catch (error) {
+  //     console.error("Error deleting account:", error);
+  //     toast.error("Error marking account for deletion");
+  //   }
+  // };
+
+  
+ const handleDeleteAccount = async (id: string) => {
+  if (
+    !confirm(
+      "Are you sure you want to mark this account for deletion? It will show as 'Sold Out' for 24 hours before being permanently deleted along with its images."
     )
-      return;
+  )
+    return;
 
-    try {
-      const { error } = await supabase
-        .from("accounts")
-        .update({
-          is_sold: true,
-          sold_at: new Date().toISOString(),
-          deleted_at: new Date().toISOString(), // Mark for deletion
-        })
-        .eq("id", id);
+  try {
+    // Convert to MySQL datetime format (YYYY-MM-DD HH:MM:SS)
+    const now = new Date();
+    const mysqlDatetime = now.toISOString()
+      .replace('T', ' ')
+      .replace(/\.\d{3}Z$/, '');
 
-      if (error) throw error;
-      toast.success(
-        "Account marked for deletion. It will be permanently deleted in 24 hours along with its images."
-      );
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      toast.error("Error marking account for deletion");
+    const response = await fetch(`/api/admin/accounts/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        is_sold: true,
+        sold_at: mysqlDatetime,
+        deleted_at: mysqlDatetime,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Failed to update account: ${response.status}`);
     }
-  };
-
+    
+    toast.success(
+      "Account marked for deletion. It will be permanently deleted in 24 hours along with its images."
+    );
+    fetchData();
+  } catch (error: any) {
+    console.error("Error deleting account:", error);
+    toast.error(error.message || "Error marking account for deletion");
+  }
+};
+  
+  
+  
+  
   // Function to restore an account (remove from deletion queue)
   const restoreAccount = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from("accounts")
-        .update({
+      const response = await fetch(`/api/admin/accounts/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           is_sold: false,
           sold_at: null,
-          deleted_at: null, // Remove deletion mark
-        })
-        .eq("id", id);
-
-      if (error) throw error;
+          deleted_at: null,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to restore account");
       toast.success("Account restored successfully");
       fetchData();
     } catch (error) {
@@ -199,7 +244,7 @@ export default function AdminAccountsPage() {
   };
 
   // Function to delete account permanently immediately
-  const deleteAccountPermanently = async (id: string, images: string[]) => {
+  const deleteAccountPermanently = async (id: string) => {
     if (
       !confirm(
         "Are you sure you want to delete this account permanently? This action cannot be undone and all images will be deleted from storage."
@@ -208,35 +253,10 @@ export default function AdminAccountsPage() {
       return;
 
     try {
-      // Delete images from storage first
-      if (images && images.length > 0) {
-        const fileNames = images
-          .map((url: string) => {
-            const urlParts = url.split("/");
-            return urlParts[urlParts.length - 1];
-          })
-          .filter(Boolean);
-
-        if (fileNames.length > 0) {
-          const { error: deleteStorageError } = await supabase.storage
-            .from("accounts-images")
-            .remove(fileNames);
-
-          if (deleteStorageError) {
-            console.warn(
-              `Failed to delete some images for account ${id}:`,
-              deleteStorageError
-            );
-          } else {
-            console.log(`Deleted ${fileNames.length} images for account ${id}`);
-          }
-        }
-      }
-
-      // Delete the account from database
-      const { error } = await supabase.from("accounts").delete().eq("id", id);
-
-      if (error) throw error;
+      const response = await fetch(`/api/admin/accounts/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete account");
 
       toast.success("Account permanently deleted");
       fetchData();
@@ -249,84 +269,18 @@ export default function AdminAccountsPage() {
   // Function to manually clean up expired accounts and their images
   const cleanupExpiredAccounts = async () => {
     try {
-      const twentyFourHoursAgo = new Date(
-        Date.now() - 24 * 60 * 60 * 1000
-      ).toISOString();
+      const response = await fetch("/api/admin/accounts/cleanup", {
+        method: "POST",
+      });
+      if (!response.ok) throw new Error("Cleanup failed");
+      const payload = await response.json();
 
-      const { data: expiredAccounts, error: fetchError } = await supabase
-        .from("accounts")
-        .select("id, images")
-        .lt("deleted_at", twentyFourHoursAgo);
-
-      if (fetchError) throw fetchError;
-
-      if (!expiredAccounts || expiredAccounts.length === 0) {
-        toast.info("No expired accounts to clean up");
-        return;
-      }
-
-      let totalImagesDeleted = 0;
-      let accountsDeleted = 0;
-
-      for (const account of expiredAccounts) {
-        try {
-          // Delete images from storage
-          if (account.images && account.images.length > 0) {
-            const fileNames = account.images
-              .map((url: string) => {
-                const urlParts = url.split("/");
-                return urlParts[urlParts.length - 1];
-              })
-              .filter(Boolean); // Remove any empty strings
-
-            if (fileNames.length > 0) {
-              const { error: deleteStorageError } = await supabase.storage
-                .from("accounts-images")
-                .remove(fileNames);
-
-              if (deleteStorageError) {
-                console.warn(
-                  `Failed to delete some images for account ${account.id}:`,
-                  deleteStorageError
-                );
-              } else {
-                totalImagesDeleted += fileNames.length;
-                console.log(
-                  `Deleted ${fileNames.length} images for account ${account.id}`
-                );
-              }
-            }
-          }
-
-          // Delete the account from database
-          const { error: deleteAccountError } = await supabase
-            .from("accounts")
-            .delete()
-            .eq("id", account.id);
-
-          if (deleteAccountError) {
-            console.error(
-              `Failed to delete account ${account.id}:`,
-              deleteAccountError
-            );
-          } else {
-            accountsDeleted++;
-          }
-        } catch (accountError) {
-          console.error(
-            `Error processing account ${account.id}:`,
-            accountError
-          );
-          // Continue with next account even if this one fails
-        }
-      }
-
-      if (accountsDeleted > 0) {
+      if (payload.deleted > 0) {
         toast.success(
-          `Cleaned up ${accountsDeleted} accounts and ${totalImagesDeleted} images`
+          `Cleaned up ${payload.deleted} accounts and ${payload.imagesDeleted} images`
         );
       } else {
-        toast.info("No accounts were deleted during cleanup");
+        toast.info("No expired accounts to clean up");
       }
 
       fetchData();
@@ -377,6 +331,22 @@ export default function AdminAccountsPage() {
     setUploading(true);
 
     try {
+      const uploadImage = async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("folder", "accounts");
+
+        const response = await fetch("/api/admin/uploads", {
+          method: "POST",
+          body: formData,
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "Upload failed");
+        }
+        return payload.url as string;
+      };
+
       const uploadPromises = Array.from(files).map(async (file) => {
         // Validate file type
         if (!file.type.startsWith("image/")) {
@@ -388,22 +358,7 @@ export default function AdminAccountsPage() {
           throw new Error(`File ${file.name} is too large (max 5MB)`);
         }
 
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2)}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("accounts-images")
-          .upload(fileName, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data } = supabase.storage
-          .from("accounts-images")
-          .getPublicUrl(fileName);
-
-        return data.publicUrl;
+        return uploadImage(file);
       });
 
       const uploadedUrls = await Promise.all(uploadPromises);
@@ -457,23 +412,18 @@ export default function AdminAccountsPage() {
         return;
       }
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("accounts-images")
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from("accounts-images")
-        .getPublicUrl(fileName);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "accounts");
+      const response = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Upload failed");
 
       const newImages = [...accountForm.images];
-      newImages[index] = data.publicUrl;
+      newImages[index] = payload.url;
       setAccountForm((prev) => ({ ...prev, images: newImages }));
 
       toast.success("Image replaced successfully");
@@ -841,10 +791,7 @@ export default function AdminAccountsPage() {
                               variant="destructive"
                               size="sm"
                               onClick={() =>
-                                deleteAccountPermanently(
-                                  account.id,
-                                  account.images
-                                )
+                                deleteAccountPermanently(account.id)
                               }
                             >
                               <Trash2 className="h-4 w-4" />
